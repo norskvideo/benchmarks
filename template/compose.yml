@@ -1,0 +1,34 @@
+
+  norsk-${INDEX}:
+    container_name: norsk-server-${INDEX}
+    image: ${NORSK_IMAGE}
+    expose:
+      - "5001/udp"
+    volumes:
+      - ${LICENSE_FILE}:/mnt/license.json:ro
+    command: --license-file /mnt/license.json
+    shm_size: '2gb'
+  benchmark-app-${INDEX}:
+    container_name: norsk-benchmark-app-${INDEX}
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      network: host
+    depends_on:
+      norsk-${INDEX}:
+        condition: service_healthy
+    environment: 
+      - NORSK_HOST=${NORSK_HOST}
+    command: ${BENCHMARK_COMMAND}
+  source-${INDEX}:
+    container_name: norsk-source-${INDEX}
+    image: datarhei/ffmpeg
+    entrypoint: ["/bin/sh","-c"]
+    volumes:
+      - ${PWD}:/mnt/pwd/
+    command:
+    - |
+        sleep 1
+        ffmpeg -v error -re -i /mnt/pwd/"${SOURCE}" -metadata language=en -f mpegts "srt://norsk-server-${INDEX}:5001"
+    depends_on:
+      - benchmark-app-${INDEX}

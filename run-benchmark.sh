@@ -7,6 +7,7 @@ declare LICENSE_FILE
 declare SOURCE
 declare NORSK_IMAGE
 declare BENCHMARK_COMMAND
+declare COUNT
 
 export NORSK_IMAGE=id3asnorsk/norsk:v0.0.322-main
 
@@ -14,6 +15,7 @@ function usage() {
     echo "Usage: run-benchmark --license-file <license-file> --source <source> [options] [cmd]"
     echo "  Options:"
     echo "    --log-root <log-dir> : where on the host to mount Norsk's logs.  The actual logs will be in a subdirectory with the name of the example you are running.  Default ./norskLogs"
+    echo "    --count <count> : How many to spin up simultaneously, Default: 1"
     echo "    --source <source> : a file relative to this script's directory to fire over RTMP at the benchmark"
     echo "  Commands:"
     echo "    start <benchmark-name> : start the specified benchmark."
@@ -36,30 +38,47 @@ function dockerComposeCmd() {
 
 function startBenchmark() {
     local -r dockerComposeCmd=$(dockerComposeCmd || exit 1)
-    export BENCHMARK_COMMAND=$@
+    export BENCHMARK_COMMAND="$@"
 
     mkdir -p "$LOG_ROOT"
 
-    $dockerComposeCmd up --build --detach
+    runTemplate
+    $dockerComposeCmd up --build --detach --remove-orphans
 
     sleep 1
-    echo "Benchmark app logs"
-    docker logs norsk-benchmark-app
     exit 0
 }
 
 function stopBenchmark() {
     local -r dockerComposeCmd=$(dockerComposeCmd || exit 1)
-    $dockerComposeCmd down -t 1
+    $dockerComposeCmd down -t 1 --remove-orphans
     exit 0
 }
 
+
+function runTemplate() {
+    rm -f docker-compose.yml
+    cat template/root.yml > docker-compose.yml
+
+    for i in $(seq 1 $COUNT); do
+      cat template/compose.yml |
+      sed -e 's#${INDEX}#'"$i"'#g' \
+          -e 's#${LICENSE_FILE}#'"$(realpath "$LICENSE_FILE")"'#g' \
+          -e 's#${LOG_ROOT}#'"$(realpath "$LOG_ROOT")"'#g' \
+          -e 's#${NORSK_HOST}#'"norsk-server-$i"'#g' \
+          -e 's#${BENCHMARK_COMMAND}#'"$BENCHMARK_COMMAND"'#g' \
+          -e 's#${SOURCE}#'"$SOURCE"'#g' \
+          >> docker-compose.yml
+    done
+}
+
 function main() {
-    local -r opts=$(getopt -o h: --longoptions help,license-file:,source:,log-root: -n "$0" -- "$@")
+    local -r opts=$(getopt -o h: --longoptions help,license-file:,source:,count:,log-root: -n "$0" -- "$@")
     local dockerComposeCmd
 
     # Defaults
     LOG_ROOT="norskLogs"
+    COUNT=0
 
     eval set -- "$opts"
     while true; do
@@ -73,6 +92,10 @@ function main() {
             ;;
         --source)
             export SOURCE="$2"
+            shift 2
+            ;;
+        --count)
+            export COUNT="$2"
             shift 2
             ;;
         --log-root)

@@ -10,7 +10,9 @@ import {
 } from "@id3asnorsk/norsk-sdk";
 
 export function base_url(port: number): string {
-  return `localhost:${port}`;
+  let url = `${process.env.NORSK_HOST || "localhost"}:${port}`;
+  console.log(`connecting to ${url}`);
+  return url;
 }
 
 export async function create_norsk(port: number): Promise<Norsk> {
