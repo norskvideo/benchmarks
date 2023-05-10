@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  norsk:
+    container_name: norsk-server
+    image: ${NORSK_IMAGE}
+    network_mode: host
+    volumes:
+      - ${LICENSE_FILE}:/mnt/license.json:ro
+    command: --license-file /mnt/license.json
+    shm_size: '2gb'
+  example:
+    container_name: norsk-benchmark-app
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      network: host
+    network_mode: host
+    depends_on:
+      norsk:
+        condition: service_healthy
+    command: ${BENCHMARK_COMMAND}
+  source:
+    container_name: norsk-source
+    image: datarhei/ffmpeg
+    network_mode: host
+    entrypoint: ["/bin/sh","-c"]
+    volumes:
+      - ${PWD}:/mnt/pwd/
+    command:
+    - |
+        sleep 1
+        ffmpeg -v error -re -i /mnt/pwd/"${SOURCE}" -metadata language=en -f mpegts 'srt://127.0.0.1:5001'
+    depends_on:
+      - example
+    
+# NORSK_IMAGE - the container to pull down and run
+# LICENSE_FILE - fully qualified path to the license file for norsk
+# BENCHMARK_COMMAND - the npm/node command to run for the benchmark
+# SOURCE - the file to send over RTMP to Norsk
+# PWD - should be set already, but that's 'this' directory

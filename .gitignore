@@ -1,0 +1,7 @@
+.DS_Store
+.npmrc
+/app/lib
+package-lock.json
+node_modules
+sources/
+

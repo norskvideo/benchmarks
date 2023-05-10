@@ -1,0 +1,34 @@
+{
+  "license": "MIT",
+  "name": "@norskvideo/benchmarks",
+  "dependencies": {
+    "@bufbuild/protobuf": "^0.3.0",
+    "@id3asnorsk/norsk-api": "0.0.322",
+    "@id3asnorsk/norsk-sdk": "0.0.322",
+    "yargs": "^16.2.0"
+  },
+  "scripts": {
+    "build": "npx tsc",
+    "clean": "rm -rf lib",
+    "benchmark": "PORT=6790 node --enable-source-maps --trace-warnings ./lib/src/benchmark.js"
+  },
+  "files": [
+    "package.json",
+    "tsconfig.json",
+    "compose.yml",
+    ".env",
+    "*.js",
+    "*.sh",
+    "lib/src/*",
+    "src/*"
+  ],
+  "bin": "./cli.js",
+  "prettier": {},
+  "devDependencies": {
+    "@types/google-protobuf": "^3.15.6",
+    "@types/yargs": "^17.0.12",
+    "typescript": "^4.1.2",
+    "typescript-nullable": "^0.6.0"
+  },
+  "version": "1.0.127"
+}
