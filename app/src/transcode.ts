@@ -14,7 +14,7 @@ import {
 import {
   Norsk,
   VideoEncodeLadderRung
-} from "@id3asnorsk/norsk-sdk";
+} from "@norskvideo/norsk-sdk";
 
 type Arguments = {
   numInstances: number;

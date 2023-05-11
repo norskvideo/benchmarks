@@ -8,7 +8,7 @@ import {
   RtpInputSettings,
   AudioMatrixMixerSettings,
   ChannelName,
-} from "@id3asnorsk/norsk-sdk";
+} from "@norskvideo/norsk-sdk";
 
 import { select_audio } from "./common";
 

@@ -6,7 +6,7 @@ import local from './local'
 
 import {
   VideoEncodeLadderRung
-} from "@id3asnorsk/norsk-sdk";
+} from "@norskvideo/norsk-sdk";
 
 interface Ladder {
   [key: string]: VideoEncodeLadderRung[] 

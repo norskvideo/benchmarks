@@ -7,7 +7,7 @@ import {
   PinToKey,
   StreamMetadata,
   VideoEncodeLadderRung,
-} from "@id3asnorsk/norsk-sdk";
+} from "@norskvideo/norsk-sdk";
 
 export function base_url(port: number): string {
   let url = `${process.env.NORSK_HOST || "localhost"}:${port}`;

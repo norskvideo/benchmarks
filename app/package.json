@@ -3,8 +3,8 @@
   "name": "@norskvideo/benchmarks",
   "dependencies": {
     "@bufbuild/protobuf": "^0.3.0",
-    "@id3asnorsk/norsk-api": "0.0.322",
-    "@id3asnorsk/norsk-sdk": "0.0.322",
+    "@norskvideo/norsk-api": "0.0.327",
+    "@norskvideo/norsk-sdk": "0.0.327",
     "yargs": "^16.2.0"
   },
   "scripts": {

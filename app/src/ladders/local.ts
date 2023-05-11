@@ -1,5 +1,5 @@
 
-import { VideoEncodeLadderRung } from "@id3asnorsk/norsk-sdk";
+import { VideoEncodeLadderRung } from "@norskvideo/norsk-sdk";
 
 
 export default [
