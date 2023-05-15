@@ -52,6 +52,7 @@ export default command;
 
 async function transcode_main(args: yargs.ArgumentsCamelCase<Arguments>) {
   let streams: VideoEncodeLadderRung[] = ladders[args.ladder] as VideoEncodeLadderRung[];
+
   if (!streams) {
     console.log(`Unknown ladder ${args.ladder}`);
     return;

@@ -11,12 +11,12 @@ require('fs')
     if(name == 'index.js') { return; }
     if(name.endsWith(".d.ts")) { return; }
     if(name.endsWith(".map")) { return; }
-    ladder[name] = require(`./${file}`);
+    ladder[name] = require(`./${file}`).default;
   });
 
 import {
   VideoEncodeLadderRung
-} from "@id3asnorsk/norsk-sdk";
+} from "@norskvideo/norsk-sdk";
 
 
 export default ladder;
