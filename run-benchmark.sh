@@ -9,7 +9,7 @@ declare NORSK_IMAGE
 declare BENCHMARK_COMMAND
 declare COUNT
 
-export NORSK_IMAGE=id3asnorsk/norsk:v0.0.322-main
+export NORSK_IMAGE=norskvideo/norsk:v0.0.329-main
 
 function usage() {
     echo "Usage: run-benchmark --license-file <license-file> --source <source> [options] [cmd]"
@@ -29,7 +29,8 @@ function dockerComposeCmd() {
             echo >&2 "Error: Unable to find docker-compose - exiting"
             exit 1
         else
-            echo "docker-compose"
+            echo >&2 "Error: Docker compose v1 found, please upgrade to v2"
+            exit 1 
         fi
     else
         echo "docker compose"
@@ -38,6 +39,10 @@ function dockerComposeCmd() {
 
 function startBenchmark() {
     local -r dockerComposeCmd=$(dockerComposeCmd || exit 1)
+
+    if [[ -z $dockerComposeCmd ]]; then
+      exit 1
+    fi
     export BENCHMARK_COMMAND="$@"
 
     mkdir -p "$LOG_ROOT"

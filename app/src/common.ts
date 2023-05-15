@@ -93,7 +93,7 @@ export async function local_hls(norsk: Norsk, video: SourceMediaNode | null, aud
       partDurationSeconds: 1.0,
       segmentDurationSeconds: 4.0,
       delayOutputMs,
-      destinations: [],
+      destinations: [{ type: "local" as const, retentionPeriodSeconds: 60 }],
     };
   });
 

@@ -4,10 +4,16 @@
     image: ${NORSK_IMAGE}
     expose:
       - "5001/udp"
+      - "8080/tcp"
+      - "6791/tcp"
+      - "6790/tcp"
     volumes:
       - ${LICENSE_FILE}:/mnt/license.json:ro
     command: --license-file /mnt/license.json
     shm_size: '2gb'
+    environment:
+     - NVIDIA_VISIBLE_DEVICES=all
+     - NVIDIA_DRIVER_CAPABILITIES=video,compute,utility
   benchmark-app-${INDEX}:
     container_name: norsk-benchmark-app-${INDEX}
     build:
