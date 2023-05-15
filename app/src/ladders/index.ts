@@ -1,22 +1,22 @@
-
-import high_ultrafast from './high-ultrafast'
-import nvidia from './nvidia'
-import local from './local'
-
-
-import {
-  VideoEncodeLadderRung
-} from "@norskvideo/norsk-sdk";
-
 interface Ladder {
   [key: string]: VideoEncodeLadderRung[] 
 }
 
-let ladder: Ladder = {
-  "high-ultrafast": high_ultrafast as VideoEncodeLadderRung[],
-  "nvidia": nvidia as VideoEncodeLadderRung[],
-  "local": local as VideoEncodeLadderRung[],
-}
+const ladder: Ladder = {};
+
+require('fs')
+  .readdirSync(__dirname)
+  .forEach((file: string) => {
+    const name = file.replace(/\.js$/, '');
+    if(name == 'index.js') { return; }
+    if(name.endsWith(".d.ts")) { return; }
+    if(name.endsWith(".map")) { return; }
+    ladder[name] = require(`./${file}`);
+  });
+
+import {
+  VideoEncodeLadderRung
+} from "@id3asnorsk/norsk-sdk";
 
 
 export default ladder;
