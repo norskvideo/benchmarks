@@ -11,7 +11,7 @@ There are presently three benchmarks to choose from
 The latter tends to cap out on network requirements long before any machine reaches saturation so we'll focus on the video ladders in these examples.
 
 Preparing to run SRT -> HLS Ladder
---
+------
 
 - Ensure Docker and Docker Compose (at least v2) is installed
 - Ensure a valid license file is present somewhere locally
@@ -46,7 +46,8 @@ The default ladder is (deliberately) lightweight so we can easily change the abo
 ./run-benchmark.sh --license-file $MY_LICENSE_FILE --count 2 --source sources/$MY_SOURCE start 'npx benchmarks transcode'
 ```
 
-# Changing the ladder
+Changing the ladder
+------
 
 Another ladder exists out of the box in the benchmark app, and using it is as simple as specifying its name
 
@@ -57,7 +58,8 @@ Another ladder exists out of the box in the benchmark app, and using it is as si
 By adding typescript files to the folder *app/src/ladders*, you can add your own more representative ladders for benchmarking purposes by specifying their name.
 
 
-# Using an Nvidia GPU
+Using an Nvidia GPU
+-------
 
 The benchmarks can work against an nvidia GPU out of the box assuming that there is just one and that Nvidia has been set up correctly for using the GPU on docker according to Nvidia's own docs found [here](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
 
@@ -99,3 +101,8 @@ With the above, we could run the default 'nvidia' ladder with this command easil
 
 Note: Nvidia and X264 ladders can be mixed and matched (for example, using the Nvidia GPU for the HEVC 4k encodes and using X264 for mobile devices) and this is a key consideration when designing a ladder for benchmarking and production.
 
+Further work
+----
+
+- Running ffmpeg locally (even with codec copying) consumes CPU and you might want to modify the benchmark app to consume an external source
+- Running a Norsk instance per 'channel/event' is a common configuration for clients, but a multi-tenant solution would be more efficient (see the flag: '--load')
