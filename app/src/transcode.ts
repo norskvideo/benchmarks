@@ -13,7 +13,7 @@ import {
 
 import {
   Norsk,
-  VideoEncodeLadderRung
+  VideoEncodeRung
 } from "@norskvideo/norsk-sdk";
 
 type Arguments = {
@@ -51,7 +51,7 @@ let command: any = {
 export default command;
 
 async function transcode_main(args: yargs.ArgumentsCamelCase<Arguments>) {
-  let streams: VideoEncodeLadderRung[] = ladders[args.ladder] as VideoEncodeLadderRung[];
+  let streams: VideoEncodeRung[] = ladders[args.ladder] as VideoEncodeRung[];
 
   if (!streams) {
     console.log(`Unknown ladder ${args.ladder}`);

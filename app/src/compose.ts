@@ -12,9 +12,9 @@ import {
 
 
 import {
-  ComposeVideoSettings,
+  VideoComposeSettings,
   ComposePart,
-  VideoEncodeLadderRung,
+  VideoEncodeRung,
 } from "@norskvideo/norsk-sdk";
 
 type Arguments = {
@@ -71,7 +71,7 @@ let command: any = {
 export default command;
 
 async function compose_main(args: yargs.ArgumentsCamelCase<Arguments>) {
-  let streams: VideoEncodeLadderRung[] = ladders[args.ladder] as VideoEncodeLadderRung[];
+  let streams: VideoEncodeRung[] = ladders[args.ladder] as VideoEncodeRung[];
   if (!streams) {
     console.log(`Unknown ladder ${args.ladder}`);
     return;
@@ -107,7 +107,7 @@ async function compose_main(args: yargs.ArgumentsCamelCase<Arguments>) {
 
       const parts = [background, overlay];
 
-      const composeSettings: ComposeVideoSettings<"background" | "overlay"> = {
+      const composeSettings: VideoComposeSettings<"background" | "overlay"> = {
         id: `compose-${x}`,
         referenceStream: background.pin,
         outputResolution: { width: streams[0].width, height: streams[0].height },
@@ -116,7 +116,7 @@ async function compose_main(args: yargs.ArgumentsCamelCase<Arguments>) {
         parts,
       };
 
-      let compose = await norsk.processor.transform.composeOverlay(composeSettings);
+      let compose = await norsk.processor.transform.videoCompose(composeSettings);
 
       compose.subscribeToPins([
         { source: normalised1.video, sourceSelector: video_to_pin(background.pin) },

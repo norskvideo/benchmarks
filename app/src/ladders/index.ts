@@ -1,5 +1,5 @@
 interface Ladder {
-  [key: string]: VideoEncodeLadderRung[] 
+  [key: string]: VideoEncodeRung[] 
 }
 
 const ladder: Ladder = {};
@@ -15,7 +15,7 @@ require('fs')
   });
 
 import {
-  VideoEncodeLadderRung
+  VideoEncodeRung
 } from "@norskvideo/norsk-sdk";
 
 

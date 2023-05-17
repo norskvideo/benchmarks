@@ -9,7 +9,7 @@ declare NORSK_IMAGE
 declare BENCHMARK_COMMAND
 declare COUNT
 
-export NORSK_IMAGE=norskvideo/norsk:v0.0.329-main
+export NORSK_IMAGE=norskvideo/norsk:v1.0.331-main
 
 function usage() {
     echo "Usage: run-benchmark --license-file <license-file> --source <source> [options] [cmd]"

@@ -6,7 +6,7 @@ import {
   SourceMediaNode,
   PinToKey,
   StreamMetadata,
-  VideoEncodeLadderRung,
+  VideoEncodeRung,
 } from "@norskvideo/norsk-sdk";
 
 export function base_url(port: number): string {
@@ -73,8 +73,8 @@ export function ladder_item(desiredRendition: string) {
   };
 }
 
-export async function transcode(norsk: Norsk, input: SourceMediaNode, rungs: VideoEncodeLadderRung[], name: string) {
-  let ladder = await norsk.processor.transform.videoEncodeLadder({
+export async function transcode(norsk: Norsk, input: SourceMediaNode, rungs: VideoEncodeRung[], name: string) {
+  let ladder = await norsk.processor.transform.videoEncode({
     id: `ladder-${name}`,
     rungs,
   });
@@ -82,12 +82,12 @@ export async function transcode(norsk: Norsk, input: SourceMediaNode, rungs: Vid
   return ladder;
 }
 
-export async function local_hls(norsk: Norsk, video: SourceMediaNode | null, audio: SourceMediaNode, streams: VideoEncodeLadderRung[], name: string) {
+export async function local_hls(norsk: Norsk, video: SourceMediaNode | null, audio: SourceMediaNode, streams: VideoEncodeRung[], name: string) {
   let delayOutputMs = 500.0;
   let masterPlaylistSettings = { id: `master-${name}`, playlistName: `master-${name}`, destinations: [{ type: "local" as const, retentionPeriodSeconds: 60 }] };
-  let masterOutput = await norsk.output.hlsMaster(masterPlaylistSettings);
+  let masterOutput = await norsk.output.cmafMaster(masterPlaylistSettings);
 
-  let hlsVideoSettings = streams.map((s) => {
+  let cmafVideoSettings = streams.map((s) => {
     return {
       id: `video-${s.name}-${name}`,
       partDurationSeconds: 1.0,
@@ -97,7 +97,7 @@ export async function local_hls(norsk: Norsk, video: SourceMediaNode | null, aud
     };
   });
 
-  let hlsAudioSettings = {
+  let cmafAudioSettings = {
     id: `audio-${name}`,
     partDurationSeconds: 1.0,
     segmentDurationSeconds: 4.0,
@@ -106,7 +106,7 @@ export async function local_hls(norsk: Norsk, video: SourceMediaNode | null, aud
   };
 
   if (video) {
-    let videoOutputs = await Promise.all(hlsVideoSettings
+    let videoOutputs = await Promise.all(cmafVideoSettings
       .map((v, i) => { return { v, s: streams[i] }; }) // lol, js doesn't have a 'zip'? wtf
       .map(async ({ v, s }) => {
 
@@ -121,7 +121,7 @@ export async function local_hls(norsk: Norsk, video: SourceMediaNode | null, aud
           { source: video, sourceSelector: ladder_item(`${s.name}`) },
         ]);
 
-        let node = await norsk.output.hlsVideo(v);
+        let node = await norsk.output.cmafVideo(v);
         node.subscribe([
           { source: mappedVideo, sourceSelector: select_video },
         ]);
@@ -129,14 +129,14 @@ export async function local_hls(norsk: Norsk, video: SourceMediaNode | null, aud
       }));
   }
 
-  let audioOutput = await norsk.output.hlsAudio(hlsAudioSettings);
+  let audioOutput = await norsk.output.cmafAudio(cmafAudioSettings);
 
   audioOutput.subscribe([
     { source: audio, sourceSelector: select_audio },
   ]);
 
   masterOutput.subscribe(
-    (video ? hlsVideoSettings.map((v) => { return { source: video, sourceSelector: ladder_item(v.id) }; }) : []).concat(
+    (video ? cmafVideoSettings.map((v) => { return { source: video, sourceSelector: ladder_item(v.id) }; }) : []).concat(
       [
         { source: audio, sourceSelector: select_audio },
       ]));

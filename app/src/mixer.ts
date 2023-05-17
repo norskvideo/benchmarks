@@ -6,7 +6,7 @@ import {
   Norsk,
   SourceMediaNode,
   RtpInputSettings,
-  AudioMatrixMixerSettings,
+  AudioMixMatrixSettings,
   ChannelName,
 } from "@norskvideo/norsk-sdk";
 
@@ -98,14 +98,14 @@ async function matrix_mixer(
   channelGains[3][3] = 0.0;
   channelGains[4][4] = 0.0;
   channelGains[5][5] = 0.0;
-  let matrixMixerSettings: AudioMatrixMixerSettings = {
+  let matrixMixerSettings: AudioMixMatrixSettings = {
     id: name,
     onError: (err) => console.log("MIXER ERROR", err),
     outputChannelLayout: "5.1",
     channelGains,
   };
 
-  let matrixMixer = await norsk.processor.transform.audioMatrixMixer(
+  let matrixMixer = await norsk.processor.transform.audioMixMatrix(
     matrixMixerSettings
   );
   matrixMixer.subscribe([{ source: input, sourceSelector: select_audio }]);

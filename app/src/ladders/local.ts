@@ -1,5 +1,5 @@
 
-import { VideoEncodeLadderRung } from "@norskvideo/norsk-sdk";
+import { VideoEncodeRung } from "@norskvideo/norsk-sdk";
 
 
 export default [
@@ -51,4 +51,4 @@ export default [
       tune: "zerolatency",
     },
   }),
-] as VideoEncodeLadderRung[];
+] as VideoEncodeRung[];
