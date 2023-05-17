@@ -3,7 +3,7 @@ import yargs from "yargs";
 
 import {
   create_norsk
-  , srt_source
+  , file_source
   , normalise_input
   , transcode
   , local_hls
@@ -22,6 +22,7 @@ type Arguments = {
   load: number;
   ladder: string;
   overlaySize: number;
+  file: string;
 }
 
 let command: any = {
@@ -33,6 +34,12 @@ let command: any = {
       demandOption: false,
       type: "number",
       default: 1,
+    },
+    "--file": {
+      describe: "A file source (TS or MP4) to read from",
+      demandOption: true,
+      type: "string",
+      default: "",
     },
     "load": {
       describe: "How many jobs to run on each Norsk",
@@ -85,8 +92,10 @@ async function compose_main(args: yargs.ArgumentsCamelCase<Arguments>) {
       let srtPort2 = 5002 + (j * 100);
 
       let norsk = await create_norsk(norskPort);
-      let source1 = await srt_source(norsk, srtPort1, `background-${x}`);
-      let source2 = await srt_source(norsk, srtPort2, `overlay-${x}`);
+
+      let source1 = await file_source(norsk, args.file, `background-${x}`);
+      let source2 = await file_source(norsk, args.file, `overlay-${x}`);
+      
       let normalised1 = await normalise_input(norsk, source1, `background-${x}`);
       let normalised2 = await normalise_input(norsk, source2, `overlay-${x}`);
 

@@ -3,6 +3,8 @@ import {
   audioStreamKeys,
   videoStreamKeys,
   SrtInputSettings,
+  LocalFileInputSettings,
+  FileMp4InputSettings,
   SourceMediaNode,
   PinToKey,
   StreamMetadata,
@@ -34,6 +36,30 @@ export async function srt_source(norsk: Norsk, port: number, sourceName: string)
     sourceName
   };
   return norsk.input.srt(settings);
+}
+
+export async function file_source(norsk: Norsk, fileName: string, sourceName: string) {
+  return fileName.endsWith(".ts") 
+    ? ts_file_source(norsk, fileName, sourceName)
+    : mp4_file_source(norsk, fileName, sourceName);
+}
+
+export async function ts_file_source(norsk: Norsk, fileName: string, sourceName: string) {
+  let settings: LocalFileInputSettings = {
+    id: `ts_input-${sourceName}`,
+    fileName,
+    sourceName
+  };
+  return norsk.input.fileTs(settings);
+}
+
+export async function mp4_file_source(norsk: Norsk, fileName: string, sourceName: string) {
+  let settings: FileMp4InputSettings = {
+    id: `mp4_input-${sourceName}`,
+    fileName,
+    sourceName
+  };
+  return norsk.input.fileMp4(settings);
 }
 
 

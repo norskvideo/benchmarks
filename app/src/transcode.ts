@@ -5,6 +5,7 @@ import yargs from "yargs";
 import {
   create_norsk
   , srt_source
+  , file_source
   , normalise_input
   , transcode
   , local_hls
@@ -20,6 +21,7 @@ type Arguments = {
   numInstances: number;
   load: number;
   ladder: string;
+  file: string
 }
 
 let command: any = {
@@ -37,6 +39,12 @@ let command: any = {
       demandOption: false,
       type: "number",
       default: 1,
+    },
+    "--file": {
+      describe: "A file source (TS or MP4) to read from",
+      demandOption: true,
+      type: "string",
+      default: "",
     },
     "load": {
       describe: "How many jobs to run on each Norsk",
@@ -65,7 +73,9 @@ async function transcode_main(args: yargs.ArgumentsCamelCase<Arguments>) {
       let srtPort = 5001 + (j * 100);
 
       let norsk = await create_norsk(norskPort);
-      let source = await srt_source(norsk, srtPort, `srt-${x}`);
+      
+      let source = await file_source(norsk, args.file, `file-${x}`);
+
       let normalised = await normalise_input(norsk, source, `normalise-${x}`);
       let ladder = await transcode(norsk, normalised.video, streams, `transcode-${x}`);
       let output = local_hls(norsk, ladder, normalised.audio, streams, `output-${x}`);

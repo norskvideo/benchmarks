@@ -9,6 +9,7 @@
       - "6790/tcp"
     volumes:
       - ${LICENSE_FILE}:/mnt/license.json:ro
+      - ${SOURCE}:${SOURCE}
     command: --license-file /mnt/license.json
     shm_size: '2gb'
     environment:
@@ -26,15 +27,3 @@
     environment: 
       - NORSK_HOST=${NORSK_HOST}
     command: ${BENCHMARK_COMMAND}
-  source-${INDEX}:
-    container_name: norsk-source-${INDEX}
-    image: datarhei/ffmpeg
-    entrypoint: ["/bin/sh","-c"]
-    volumes:
-      - ${PWD}:/mnt/pwd/
-    command:
-    - |
-        sleep 1
-        ffmpeg -v error -re -i /mnt/pwd/"${SOURCE}" -metadata language=en -f mpegts "srt://norsk-server-${INDEX}:5001"
-    depends_on:
-      - benchmark-app-${INDEX}
