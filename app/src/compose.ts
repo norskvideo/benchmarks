@@ -35,7 +35,7 @@ let command: any = {
       type: "number",
       default: 1,
     },
-    "--file": {
+    "file": {
       describe: "A file source (TS or MP4) to read from",
       demandOption: true,
       type: "string",

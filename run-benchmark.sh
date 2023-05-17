@@ -43,7 +43,7 @@ function startBenchmark() {
     if [[ -z $dockerComposeCmd ]]; then
       exit 1
     fi
-    export BENCHMARK_COMMAND="$@"
+    export BENCHMARK_COMMAND="npx benchmarks transcode --file $SOURCE"
 
     mkdir -p "$LOG_ROOT"
 
@@ -121,6 +121,10 @@ function main() {
         case "$1" in
         stop)
             stopBenchmark
+            exit 0
+            ;;
+        start)
+            startBenchmark
             exit 0
             ;;
         *)
