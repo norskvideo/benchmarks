@@ -5,6 +5,7 @@ cd "${0%/*}"
 declare LOG_ROOT
 declare LICENSE_FILE
 declare SOURCE
+declare LADDER
 declare NORSK_IMAGE
 declare BENCHMARK_COMMAND
 declare COUNT
@@ -43,7 +44,7 @@ function startBenchmark() {
     if [[ -z $dockerComposeCmd ]]; then
       exit 1
     fi
-    export BENCHMARK_COMMAND="npx benchmarks transcode --file $SOURCE"
+    export BENCHMARK_COMMAND="npx benchmarks transcode --file $SOURCE --ladder $LADDER"
 
     mkdir -p "$LOG_ROOT"
 
@@ -78,12 +79,13 @@ function runTemplate() {
 }
 
 function main() {
-    local -r opts=$(getopt -o h: --longoptions help,license-file:,source:,count:,log-root: -n "$0" -- "$@")
+    local -r opts=$(getopt -o h: --longoptions help,license-file:,source:,ladder:,count:,log-root: -n "$0" -- "$@")
     local dockerComposeCmd
 
     # Defaults
     LOG_ROOT="norskLogs"
     COUNT=0
+    LADDER=local
 
     eval set -- "$opts"
     while true; do
@@ -97,6 +99,10 @@ function main() {
             ;;
         --source)
             export SOURCE="$2"
+            shift 2
+            ;;
+        --ladder)
+            export LADDER="$2"
             shift 2
             ;;
         --count)
