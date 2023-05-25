@@ -18,8 +18,14 @@ export function base_url(port: number): string {
 }
 
 export async function create_norsk(port: number): Promise<Norsk> {
+  var x = 0;
   return await Norsk.connect({
     url: base_url(port),
+    onCurrentLoad: (l) => {
+      if( x++ % 5 == 0) {
+        console.log(l)
+      }
+    },
     onShutdown: () => {
       console.log("Norsk has shutdown");
       process.exit(1)
